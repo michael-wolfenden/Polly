@@ -34,7 +34,7 @@ public static class StrategyHelperTests
 
                     throw new InvalidOperationException();
                 },
-                ResilienceContextPool.Shared.Get(),
+                ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken),
                 "dummy");
 
             outcome.Exception.Should().BeOfType<InvalidOperationException>();
@@ -56,7 +56,7 @@ public static class StrategyHelperTests
 
                     return Outcome.FromResult("success");
                 },
-                ResilienceContextPool.Shared.Get(),
+                ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken),
                 "dummy");
 
             outcomeTask.IsCompleted.Should().Be(!isAsync);

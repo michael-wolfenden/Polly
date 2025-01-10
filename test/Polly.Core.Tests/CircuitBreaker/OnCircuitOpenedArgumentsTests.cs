@@ -8,7 +8,7 @@ public static class OnCircuitOpenedArgumentsTests
     public static void Ctor_Ok()
     {
         // Arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
 
         // Act
         var args = new OnCircuitOpenedArguments<int>(context, Outcome.FromResult(1), TimeSpan.FromSeconds(2), true);

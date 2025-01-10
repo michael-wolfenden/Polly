@@ -64,6 +64,6 @@ public class TimeoutResiliencePipelineBuilderExtensionsTests
 
         return strategy.TimeoutGenerator(
             new TimeoutGeneratorArguments(
-                ResilienceContextPool.Shared.Get())).Preserve().GetAwaiter().GetResult();
+                ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken))).Preserve().GetAwaiter().GetResult();
     }
 }

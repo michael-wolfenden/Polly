@@ -36,7 +36,7 @@ public class CacheTResultSpecs : IDisposable
         var methods = instanceType.GetMethods(flags);
         var methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "EmptyStruct" });
 
-        var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None]);
+        var func = () => methodInfo.Invoke(instance, [action, new Context(), TestContext.Current.CancellationToken]);
 
         var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
         exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");

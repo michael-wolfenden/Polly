@@ -2043,7 +2043,7 @@ public class AdvancedCircuitBreakerSpecs : IDisposable
         // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution faults.  This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
 #if NET
-        longRunningExecution.Wait(testTimeoutToExposeDeadlocks, CancellationToken.None).Should().BeTrue();
+        longRunningExecution.Wait(testTimeoutToExposeDeadlocks, TestContext.Current.CancellationToken).Should().BeTrue();
 #else
         longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
 #endif

@@ -34,14 +34,14 @@ public partial class ResiliencePipelineTests
             AssertContext = AssertResilienceContextAndToken,
         };
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async (_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContextPool.Shared.Get(), "dummy-state"), result)
+        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async (_, s) => { s.Should().Be("dummy-state"); return result; }, ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken), "dummy-state"), result)
         {
             Caption = "ExecuteAsyncT_ResilienceContextAndState",
             AssertContext = AssertResilienceContext,
             AssertContextAfter = AssertContextInitialized,
         };
 
-        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async _ => result, ResilienceContextPool.Shared.Get()), result)
+        yield return new ExecuteParameters<long>(r => r.ExecuteAsync(async _ => result, ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken)), result)
         {
             Caption = "ExecuteAsyncT_ResilienceContext",
             AssertContext = AssertResilienceContext,
@@ -91,7 +91,7 @@ public partial class ResiliencePipelineTests
     [Fact]
     public async Task ExecuteAsync_T_EnsureCallStackPreserved()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
 
         await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod()));
         await AssertStackTrace(s => s.ExecuteAsync(_ => MyThrowingMethod(), context));
@@ -126,7 +126,7 @@ public partial class ResiliencePipelineTests
             context.ResultType.Should().Be<int>();
             return Outcome.FromResultAsValueTask(12345);
         },
-        ResilienceContextPool.Shared.Get(),
+        ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken),
         "state");
 
         result.Result.Should().Be(12345);

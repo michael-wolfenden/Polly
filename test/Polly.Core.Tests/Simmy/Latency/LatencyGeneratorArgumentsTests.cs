@@ -8,7 +8,7 @@ public static class LatencyGeneratorArgumentsTests
     public static void Ctor_Ok()
     {
         // Arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
 
         // Act
         var args = new LatencyGeneratorArguments(context);

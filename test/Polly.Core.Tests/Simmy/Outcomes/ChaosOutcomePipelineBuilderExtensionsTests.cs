@@ -27,7 +27,7 @@ public class ChaosOutcomePipelineBuilderExtensionsTests
 
     private static void AssertResultStrategy<T>(ResiliencePipelineBuilder<T> builder, ChaosOutcomeStrategyOptions<T> options, bool enabled, double injectionRate, Outcome<T> outcome)
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var strategy = builder.Build().GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<ChaosOutcomeStrategy<T>>().Subject;
 
         strategy.EnabledGenerator.Invoke(new(context)).Preserve().GetAwaiter().GetResult().Should().Be(enabled);

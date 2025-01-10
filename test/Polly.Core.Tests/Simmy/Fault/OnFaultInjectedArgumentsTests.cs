@@ -8,7 +8,7 @@ public static class OnFaultInjectedArgumentsTests
     public static void Ctor_Ok()
     {
         // Arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var fault = new InvalidCastException();
 
         // Act

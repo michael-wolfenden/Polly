@@ -14,7 +14,7 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue, onError);
 
-        (bool cacheHit, object? fromCache) = await stubCacheProvider.TryGetAsync(OperationKey, CancellationToken.None, false);
+        (bool cacheHit, object? fromCache) = await stubCacheProvider.TryGetAsync(OperationKey, TestContext.Current.CancellationToken, false);
         cacheHit.Should().BeFalse();
         fromCache.Should().BeNull();
 
@@ -33,7 +33,7 @@ public class GenericCacheProviderAsyncSpecs : IDisposable
         const ResultPrimitive ValueToReturn = ResultPrimitive.Substitute;
         const string OperationKey = "SomeOperationKey";
 
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestContext.Current.CancellationToken;
         IAsyncCacheProvider stubCacheProvider = new StubCacheProvider();
         var cache = Policy.CacheAsync(stubCacheProvider, TimeSpan.MaxValue);
 

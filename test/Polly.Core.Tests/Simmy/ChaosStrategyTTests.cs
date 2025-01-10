@@ -34,7 +34,7 @@ public class ChaosStrategyTTests
     [Fact]
     public async Task Ctor_Ok()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         _options.EnabledGenerator = (_) => new ValueTask<bool>(true);
         _options.InjectionRate = 0.5;
 
@@ -66,7 +66,7 @@ public class ChaosStrategyTTests
         var sut = CreateSut();
         sut.OnExecute = (_, _) => { _wasChaosUnleashed = true; return Task.CompletedTask; };
 
-        await sut.AsPipeline().ExecuteAsync<int>((_) => { return default; });
+        await sut.AsPipeline().ExecuteAsync<int>((_) => { return default; }, TestContext.Current.CancellationToken);
 
         _wasChaosUnleashed.Should().Be(shouldBeInjected);
         _enableGeneratorExecuted.Should().BeFalse();
@@ -167,7 +167,7 @@ public class ChaosStrategyTTests
         var sut = CreateSut();
         sut.OnExecute = (_, _) => { _wasChaosUnleashed = true; return Task.CompletedTask; };
 
-        await sut.AsPipeline().ExecuteAsync<int>((_) => { return default; });
+        await sut.AsPipeline().ExecuteAsync<int>((_) => { return default; }, TestContext.Current.CancellationToken);
 
         _wasChaosUnleashed.Should().BeTrue();
         _enableGeneratorExecuted.Should().BeFalse();

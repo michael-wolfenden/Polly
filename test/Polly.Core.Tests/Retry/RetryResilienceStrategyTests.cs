@@ -82,7 +82,7 @@ public class RetryResilienceStrategyTests
             var r = new DisposableResult();
             results.Add(r);
             return r;
-        });
+        }, TestContext.Current.CancellationToken);
 
         // assert
         result.IsDisposed.Should().BeFalse();
@@ -152,7 +152,7 @@ public class RetryResilienceStrategyTests
             return new ValueTask<TimeSpan?>(delay);
         };
 
-        CreateSut(TimeProvider.System).Execute(_ => "dummy");
+        CreateSut(TimeProvider.System).Execute(_ => "dummy", TestContext.Current.CancellationToken);
 
         retries.Should().Be(3);
         generatedValues.Should().Be(3);
@@ -183,7 +183,7 @@ public class RetryResilienceStrategyTests
         };
 
         var sut = CreateSut(provider);
-        await sut.ExecuteAsync(_ => new ValueTask<string>("dummy"));
+        await sut.ExecuteAsync(_ => new ValueTask<string>("dummy"), TestContext.Current.CancellationToken);
 
         retries.Should().Be(3);
         generatedValues.Should().Be(3);
@@ -286,7 +286,7 @@ public class RetryResilienceStrategyTests
         {
             _timeProvider.Advance(TimeSpan.FromMinutes(1));
             return new ValueTask<int>(0);
-        }).AsTask();
+        }, TestContext.Current.CancellationToken).AsTask();
     }
 
     [Fact]

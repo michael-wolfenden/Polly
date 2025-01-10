@@ -30,7 +30,7 @@ public static class PolicyTResultExtensionsAsync
 
     public static Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
         IEnumerable<object> resultsOrExceptionsToRaise) =>
-        policy.RaiseResultAndOrExceptionSequenceAsync(CancellationToken.None, resultsOrExceptionsToRaise);
+        policy.RaiseResultAndOrExceptionSequenceAsync(TestContext.Current.CancellationToken, resultsOrExceptionsToRaise);
 
     public static async Task<TResult> RaiseResultAndOrExceptionSequenceAsync<TResult>(this AsyncPolicy<TResult> policy,
         CancellationToken cancellationToken, IEnumerable<object> resultsOrExceptionsToRaise)

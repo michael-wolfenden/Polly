@@ -2,7 +2,7 @@
 
 public abstract class RateLimitPolicySpecsBase : RateLimitSpecsBase
 {
-    protected static CancellationToken CancellationToken => CancellationToken.None;
+    protected static CancellationToken CancellationToken => TestContext.Current.CancellationToken;
 
     protected abstract IRateLimitPolicy GetPolicyViaSyntax(
         int numberOfExecutions,

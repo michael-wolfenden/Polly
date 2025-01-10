@@ -29,7 +29,7 @@ public class ResilienceStrategyTelemetryTests
     [Fact]
     public void Report_NoOutcome_OK()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
 
         _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), context, new TestArguments());
 
@@ -49,7 +49,7 @@ public class ResilienceStrategyTelemetryTests
     {
         var source = new ResilienceTelemetrySource("builder", "instance", "strategy_name");
         var sut = new ResilienceStrategyTelemetry(source, null);
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
 
         sut.Invoking(s => s.Report(new(ResilienceEventSeverity.Warning, "dummy"), context, new TestArguments())).Should().NotThrow();
         sut.Invoking(s => s.Report(new(ResilienceEventSeverity.Warning, "dummy"), context, Outcome.FromResult(1), new TestArguments())).Should().NotThrow();
@@ -58,7 +58,7 @@ public class ResilienceStrategyTelemetryTests
     [Fact]
     public void Report_Outcome_OK()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         _sut.Report(new(ResilienceEventSeverity.Warning, "dummy-event"), context, Outcome.FromResult(99), new TestArguments());
 
         _args.Should().HaveCount(1);
@@ -75,7 +75,7 @@ public class ResilienceStrategyTelemetryTests
     [Fact]
     public void Report_SeverityNone_Skipped()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), context, Outcome.FromResult(99), new TestArguments());
         _sut.Report(new(ResilienceEventSeverity.None, "dummy-event"), context, new TestArguments());
 
@@ -87,7 +87,7 @@ public class ResilienceStrategyTelemetryTests
     {
         var sut = new ResilienceStrategyTelemetry(_source, null);
 
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
 
         sut.Invoking(s => s.Report(new(ResilienceEventSeverity.None, "dummy-event"), context, Outcome.FromResult(99), new TestArguments()))
            .Should()

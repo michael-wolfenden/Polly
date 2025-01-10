@@ -9,7 +9,7 @@ public static class DelegatingComponentTests
     {
         await using var component = new CallbackComponent();
         var next = new CallbackComponent();
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var state = 1;
 
         await using var delegating = new DelegatingComponent(component) { Next = next };
@@ -29,7 +29,7 @@ public static class DelegatingComponentTests
     {
         await using var component = new CallbackComponent();
         var next = new CallbackComponent();
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var state = 1;
 
         await using var delegating = new DelegatingComponent(component) { Next = next };

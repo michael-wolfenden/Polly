@@ -5,7 +5,7 @@ public class CacheAsyncSpecs : IDisposable
 {
     #region Configuration
 
-    private static CancellationToken CancellationToken => CancellationToken.None;
+    private static CancellationToken CancellationToken => TestContext.Current.CancellationToken;
 
     [Fact]
     public void Should_throw_when_action_is_null()

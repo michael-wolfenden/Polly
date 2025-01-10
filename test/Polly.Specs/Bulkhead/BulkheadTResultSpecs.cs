@@ -101,7 +101,7 @@ public class BulkheadTResultSpecs : BulkheadSpecsBase
                     tcs.Task.Wait();
                     return 0;
                 });
-            }, CancellationToken.None);
+            }, TestContext.Current.CancellationToken);
 
             Within(CohesionTimeLimit, () => Expect(0, () => bulkhead.BulkheadAvailableCount, nameof(bulkhead.BulkheadAvailableCount)));
 
@@ -110,7 +110,7 @@ public class BulkheadTResultSpecs : BulkheadSpecsBase
             cancellationSource.Cancel();
 
 #if NET
-            tcs.SetCanceled(CancellationToken.None);
+            tcs.SetCanceled(TestContext.Current.CancellationToken);
 #else
             tcs.SetCanceled();
 #endif

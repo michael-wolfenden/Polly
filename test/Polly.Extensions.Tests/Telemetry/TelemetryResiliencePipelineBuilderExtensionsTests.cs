@@ -22,7 +22,7 @@ public class TelemetryResiliencePipelineBuilderExtensionsTests
         using var factory = TestUtilities.CreateLoggerFactory(out var fakeLogger);
 
         _builder.ConfigureTelemetry(factory);
-        _builder.AddStrategy(new TestResilienceStrategy()).Build().Execute(_ => { });
+        _builder.AddStrategy(new TestResilienceStrategy()).Build().Execute(_ => { }, TestContext.Current.CancellationToken);
 
         fakeLogger.GetRecords().Should().NotBeEmpty();
         fakeLogger.GetRecords().Should().HaveCount(2);

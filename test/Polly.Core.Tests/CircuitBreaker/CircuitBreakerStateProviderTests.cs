@@ -26,7 +26,7 @@ public class CircuitBreakerStateProviderTests
         var control = new CircuitBreakerManualControl();
 
         await control
-            .Invoking(c => c.CloseAsync(CancellationToken.None))
+            .Invoking(c => c.CloseAsync(TestContext.Current.CancellationToken))
             .Should()
             .NotThrowAsync<InvalidOperationException>();
     }

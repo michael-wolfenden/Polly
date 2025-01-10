@@ -7,7 +7,7 @@ public partial class IssuesTests
     [Fact]
     public void CircuitBreakerStateSharing_959()
     {
-        var cancellationToken = CancellationToken.None;
+        var cancellationToken = TestContext.Current.CancellationToken;
         var options = new CircuitBreakerStrategyOptions
         {
             FailureRatio = 1,

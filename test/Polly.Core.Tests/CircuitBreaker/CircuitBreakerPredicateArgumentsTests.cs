@@ -8,7 +8,7 @@ public static class CircuitBreakerPredicateArgumentsTests
     public static void Ctor_Ok()
     {
         var args = new CircuitBreakerPredicateArguments<int>(
-            ResilienceContextPool.Shared.Get(CancellationToken.None),
+            ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken),
             Outcome.FromResult(1));
 
         args.Context.Should().NotBeNull();

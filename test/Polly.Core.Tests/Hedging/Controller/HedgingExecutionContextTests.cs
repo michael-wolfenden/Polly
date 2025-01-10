@@ -141,7 +141,7 @@ public class HedgingExecutionContextTests : IDisposable
 
         var task = context.TryWaitForCompletedExecutionAsync(System.Threading.Timeout.InfiniteTimeSpan).AsTask();
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
-        task.Wait(20).Should().BeFalse();
+        task.Wait(20, TestContext.Current.CancellationToken).Should().BeFalse();
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
         _timeProvider.Advance(TimeSpan.FromDays(1));
         await task;
@@ -164,7 +164,7 @@ public class HedgingExecutionContextTests : IDisposable
         var count = _timeProvider.TimerEntries.Count;
         var task = context.TryWaitForCompletedExecutionAsync(hedgingDelay).AsTask();
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
-        task.Wait(20).Should().BeFalse();
+        task.Wait(20, TestContext.Current.CancellationToken).Should().BeFalse();
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
         _timeProvider.TimerEntries.Should().HaveCount(count + 1);
         _timeProvider.TimerEntries.Last().Delay.Should().Be(hedgingDelay);
@@ -386,7 +386,7 @@ public class HedgingExecutionContextTests : IDisposable
 
         var pending = context.Tasks[1].ExecutionTaskSafe!;
 #pragma warning disable xUnit1031 // Do not use blocking task operations in test method
-        pending.Wait(10).Should().BeFalse();
+        pending.Wait(10, TestContext.Current.CancellationToken).Should().BeFalse();
 #pragma warning restore xUnit1031 // Do not use blocking task operations in test method
 
         context.Tasks[0].AcceptOutcome();
