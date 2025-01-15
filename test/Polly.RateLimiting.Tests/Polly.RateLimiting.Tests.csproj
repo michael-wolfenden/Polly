@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <Threshold>100</Threshold>
     <NoWarn>$(NoWarn);SA1600;SA1204</NoWarn>
+    <OutputType>Exe</OutputType>
     <Include>[Polly.RateLimiting]*</Include>
   </PropertyGroup>
   <ItemGroup>

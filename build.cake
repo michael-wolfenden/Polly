@@ -9,7 +9,7 @@ var configuration = Argument<string>("configuration", "Release");
 // EXTERNAL NUGET TOOLS
 //////////////////////////////////////////////////////////////////////
 
-#Tool "xunit.runner.console&version=2.9.3"
+#Tool "xunit.v3.runner.console&version=1.0.1"
 #Tool "dotnet-stryker&version=4.5.0"
 
 //////////////////////////////////////////////////////////////////////

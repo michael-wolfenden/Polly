@@ -833,7 +833,7 @@ public class CircuitBreakerAsyncSpecs : IDisposable
 
         // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution faults.  This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
 #if NET
-        longRunningExecution.Wait(testTimeoutToExposeDeadlocks, CancellationToken.None).Should().BeTrue();
+        longRunningExecution.Wait(testTimeoutToExposeDeadlocks, TestContext.Current.CancellationToken).Should().BeTrue();
 #else
         longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
 #endif

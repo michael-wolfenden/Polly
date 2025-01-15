@@ -14,7 +14,7 @@ public class NoOpAsyncSpecs
         var methodInfo = methods.First(method => method is { Name: "ImplementationAsync", ReturnType.Name: "Task`1" });
         var generic = methodInfo.MakeGenericMethod(typeof(EmptyStruct));
 
-        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken.None, false]);
+        var func = () => generic.Invoke(instance, [action, new Context(), TestContext.Current.CancellationToken, false]);
 
         var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
         exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");

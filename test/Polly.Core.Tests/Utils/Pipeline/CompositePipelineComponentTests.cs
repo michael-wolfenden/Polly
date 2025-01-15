@@ -40,7 +40,7 @@ public class CompositePipelineComponentTests
     [Fact]
     public async Task Create_EnsureExceptionsNotWrapped()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var components = new[]
         {
             PipelineComponentFactory.FromStrategy(new TestResilienceStrategy { Before =  (_, _) => throw new NotSupportedException() }),
@@ -86,7 +86,7 @@ public class CompositePipelineComponentTests
         };
 
         var pipeline = new ResiliencePipeline(CreateSut(strategies, new FakeTimeProvider()), DisposeBehavior.Allow, null);
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         context.CancellationToken = cancellation.Token;
 
         var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsValueTask("result"), context, "state");
@@ -104,7 +104,7 @@ public class CompositePipelineComponentTests
             PipelineComponentFactory.FromStrategy(new TestResilienceStrategy()),
         };
         var pipeline = new ResiliencePipeline(CreateSut(strategies, new FakeTimeProvider()), DisposeBehavior.Allow, null);
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         context.CancellationToken = cancellation.Token;
 
         var result = await pipeline.ExecuteOutcomeAsync((_, _) => Outcome.FromResultAsValueTask("result"), context, "state");

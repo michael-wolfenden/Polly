@@ -86,7 +86,7 @@ public class PredicateBuilderTests
     [Fact]
     public async Task Operator_RetryStrategyOptions_Ok()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var options = new RetryStrategyOptions<string>
         {
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
@@ -100,7 +100,7 @@ public class PredicateBuilderTests
     [Fact]
     public async Task Operator_FallbackStrategyOptions_Ok()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var options = new FallbackStrategyOptions<string>
         {
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
@@ -114,7 +114,7 @@ public class PredicateBuilderTests
     [Fact]
     public async Task Operator_HedgingStrategyOptions_Ok()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var options = new HedgingStrategyOptions<string>
         {
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")
@@ -128,7 +128,7 @@ public class PredicateBuilderTests
     [Fact]
     public async Task Operator_AdvancedCircuitBreakerStrategyOptions_Ok()
     {
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
         var options = new CircuitBreakerStrategyOptions<string>
         {
             ShouldHandle = new PredicateBuilder<string>().HandleResult("error")

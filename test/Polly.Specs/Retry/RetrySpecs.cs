@@ -24,7 +24,7 @@ public class RetrySpecs
         var methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "TResult" });
         var generic = methodInfo.MakeGenericMethod(typeof(EmptyStruct));
 
-        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken.None]);
+        var func = () => generic.Invoke(instance, [action, new Context(), TestContext.Current.CancellationToken]);
 
         var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
         exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");

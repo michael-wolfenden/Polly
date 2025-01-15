@@ -30,7 +30,7 @@ public class RateLimiterResilienceStrategyTests
 
         strategy.Execute(_ => { }, cts.Token);
 
-        await _limiter.ReceivedWithAnyArgs().AcquireAsync(default, default);
+        await _limiter.ReceivedWithAnyArgs().AcquireAsync(default, TestContext.Current.CancellationToken);
         _lease.Received().Dispose();
     }
 
@@ -80,7 +80,7 @@ public class RateLimiterResilienceStrategyTests
 
         eventCalled.Should().Be(hasEvents);
 
-        await _limiter.ReceivedWithAnyArgs().AcquireAsync(default, default);
+        await _limiter.ReceivedWithAnyArgs().AcquireAsync(default, TestContext.Current.CancellationToken);
         _lease.Received().Dispose();
 
         _listener.GetArgs<OnRateLimiterRejectedArguments>().Should().HaveCount(1);

@@ -65,7 +65,7 @@ public class ResiliencePipelineBuilderTests
         var pipeline = builder.Build();
 
         // assert
-        pipeline.Execute(_ => executions.Add(2));
+        pipeline.Execute(_ => executions.Add(2), TestContext.Current.CancellationToken);
 
         pipeline.GetPipelineDescriptor().FirstStrategy.StrategyInstance.Should().BeOfType<TestResilienceStrategy>();
         executions.Should().BeInAscendingOrder();
@@ -108,7 +108,7 @@ public class ResiliencePipelineBuilderTests
             .Components.Should().HaveCount(3);
 
         // assert
-        strategy.Execute(_ => executions.Add(4));
+        strategy.Execute(_ => executions.Add(4), TestContext.Current.CancellationToken);
 
         executions.Should().BeInAscendingOrder();
         executions.Should().HaveCount(7);
@@ -194,7 +194,7 @@ public class ResiliencePipelineBuilderTests
         var strategy = builder.Build();
 
         // assert
-        strategy.Execute(_ => executions.Add(4));
+        strategy.Execute(_ => executions.Add(4), TestContext.Current.CancellationToken);
 
         executions.Should().BeInAscendingOrder();
         executions.Should().HaveCount(7);
@@ -309,7 +309,7 @@ The RequiredProperty field is required.
             .AddPipelineComponent(_ => internalComponent, new TestResilienceStrategyOptions());
         var pipeline = builder.Build();
 
-        pipeline.Execute(_ => string.Empty);
+        pipeline.Execute(_ => string.Empty, TestContext.Current.CancellationToken);
 
         await pipeline.DisposeHelper.DisposeAsync();
         await externalComponent.Received(0).DisposeAsync();
@@ -345,7 +345,7 @@ The RequiredProperty field is required.
         var strategy = new ResiliencePipelineBuilder().AddPipeline(pipeline1).AddPipeline(pipeline2).Build();
 
         // assert
-        strategy.Execute(_ => executions.Add(4));
+        strategy.Execute(_ => executions.Add(4), TestContext.Current.CancellationToken);
 
         executions.Should().BeInAscendingOrder();
         executions.Should().HaveCount(7);
@@ -427,7 +427,7 @@ The RequiredProperty field is required.
         var strategy = new ResiliencePipelineBuilder().AddPipeline(first).AddPipeline(second).AddPipeline(third).Build();
 
         // act
-        strategy.Execute(_ => executions.Add("execute"));
+        strategy.Execute(_ => executions.Add("execute"), TestContext.Current.CancellationToken);
 
         // assert
         executions.SequenceEqual(new[]

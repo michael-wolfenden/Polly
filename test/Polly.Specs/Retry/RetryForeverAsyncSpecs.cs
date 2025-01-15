@@ -162,7 +162,8 @@ public class RetryForeverAsyncSpecs
             .RetryForeverAsync((_, context) => contextData = context);
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            CreateDictionary("key1", "value1", "key2", "value2"));
+            CreateDictionary("key1", "value1", "key2", "value2"),
+            cancellationToken: TestContext.Current.CancellationToken);
 
         contextData.Should()
                    .ContainKeys("key1", "key2").And
@@ -203,6 +204,7 @@ public class RetryForeverAsyncSpecs
     [Fact]
     public void Should_create_new_context_for_each_call_to_execute()
     {
+        var cancellationToken = TestContext.Current.CancellationToken;
         string? contextValue = null;
 
         var policy = Policy
@@ -210,12 +212,14 @@ public class RetryForeverAsyncSpecs
             .RetryForeverAsync((_, context) => contextValue = context["key"].ToString());
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            CreateDictionary("key", "original_value"));
+            CreateDictionary("key", "original_value"),
+            cancellationToken: cancellationToken);
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            CreateDictionary("key", "new_value"));
+            CreateDictionary("key", "new_value"),
+            cancellationToken: cancellationToken);
 
         contextValue.Should().Be("new_value");
     }

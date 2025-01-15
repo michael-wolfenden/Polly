@@ -169,7 +169,7 @@ public class RateLimiterResiliencePipelineBuilderExtensionsTests
         {
             limiterStrategy.OnLeaseRejected.Should().NotBeNull();
             limiterStrategy
-                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(), Substitute.For<RateLimitLease>()))
+                .OnLeaseRejected!(new OnRateLimiterRejectedArguments(ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken), Substitute.For<RateLimitLease>()))
                 .Preserve().GetAwaiter().GetResult();
         }
         else

@@ -8,7 +8,7 @@ public static class RetryDelayGeneratorArgumentsTests
     public static void Ctor_Ok()
     {
         // Arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
 
         // Act
         var args = new RetryDelayGeneratorArguments<int>(context, Outcome.FromResult(1), 2);

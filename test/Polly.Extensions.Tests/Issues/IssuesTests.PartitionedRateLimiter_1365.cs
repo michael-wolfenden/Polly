@@ -51,7 +51,7 @@ public partial class IssuesTests
         // assert admin is not limited
         using var adminAsserted = new ManualResetEvent(false);
         var task = ExecuteBatch("admin", adminAsserted);
-        task.Wait(100).Should().BeFalse();
+        task.Wait(100, TestContext.Current.CancellationToken).Should().BeFalse();
         adminAsserted.Set();
         await task;
 
@@ -61,7 +61,7 @@ public partial class IssuesTests
             {
                 return Task.Run(async () =>
                 {
-                    var context = ResilienceContextPool.Shared.Get();
+                    var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
                     context.Properties.Set(userKey, user);
 
                     await pipeline.ExecuteAsync(async _ =>

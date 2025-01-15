@@ -314,6 +314,7 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
     {
         Func<int, Context, TimeSpan> provider = (_, _) => 1.Seconds();
 
+        var cancellationToken = TestContext.Current.CancellationToken;
         string? contextValue = null;
 
         var policy = Policy
@@ -323,12 +324,14 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
             (_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            CreateDictionary("key", "original_value"));
+            CreateDictionary("key", "original_value"),
+            cancellationToken: cancellationToken);
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            CreateDictionary("key", "new_value"));
+            CreateDictionary("key", "new_value"),
+            cancellationToken: cancellationToken);
 
         contextValue.Should().Be("new_value");
     }
@@ -423,7 +426,7 @@ public class WaitAndRetryForeverAsyncSpecs : IDisposable
             }
         },
             CreateDictionary("RetryAfter", defaultRetryAfter), // Can also set an initial value for RetryAfter, in the Context passed into the call.
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         actualRetryDuration.Should().Be(expectedRetryDuration);
     }

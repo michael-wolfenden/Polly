@@ -46,7 +46,7 @@ public partial class IssuesTests
         // now trigger the circuit breaker by evaluating multiple result types
         for (int i = 0; i < 10; i++)
         {
-            await pipeline.ExecuteAsync(_ => new ValueTask<string>("error"));
+            await pipeline.ExecuteAsync(_ => new ValueTask<string>("error"), TestContext.Current.CancellationToken);
         }
 
         // now the circuit breaker should be open

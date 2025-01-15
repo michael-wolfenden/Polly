@@ -9,7 +9,7 @@ public static class HedgingHandlerTests
     public static async Task GenerateAction_Generic_Ok()
     {
         // Arrange
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
 
         var handler = new HedgingHandler<string>(
             args => PredicateResult.True(),

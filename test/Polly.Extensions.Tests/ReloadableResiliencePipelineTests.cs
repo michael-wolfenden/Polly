@@ -60,7 +60,7 @@ public class ReloadableResiliencePipelineTests
 
         var serviceProvider = services.BuildServiceProvider();
         var pipeline = serviceProvider.GetRequiredService<ResiliencePipelineProvider<string>>().GetPipeline("my-pipeline");
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(TestContext.Current.CancellationToken);
 
         // initial
         pipeline.Execute(_ => "dummy", context);

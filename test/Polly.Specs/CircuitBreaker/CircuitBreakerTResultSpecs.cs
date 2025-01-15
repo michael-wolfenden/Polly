@@ -36,7 +36,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
         var methods = instanceType.GetMethods(flags);
         var methodInfo = methods.First(method => method is { Name: "Implementation", ReturnType.Name: "EmptyStruct" });
 
-        var func = () => methodInfo.Invoke(instance, [action, new Context(), CancellationToken.None]);
+        var func = () => methodInfo.Invoke(instance, [action, new Context(), TestContext.Current.CancellationToken]);
 
         var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
         exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
@@ -933,7 +933,7 @@ public class CircuitBreakerTResultSpecs : IDisposable
 
         // Graceful cleanup: allow executions time to end naturally; timeout if any deadlocks; expose any execution faults.  This validates the test ran as expected (and background delegates are complete) before we assert on outcomes.
 #if NET
-        longRunningExecution.Wait(testTimeoutToExposeDeadlocks, CancellationToken.None).Should().BeTrue();
+        longRunningExecution.Wait(testTimeoutToExposeDeadlocks, TestContext.Current.CancellationToken).Should().BeTrue();
 #else
         longRunningExecution.Wait(testTimeoutToExposeDeadlocks).Should().BeTrue();
 #endif

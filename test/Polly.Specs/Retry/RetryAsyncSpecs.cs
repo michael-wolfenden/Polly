@@ -26,7 +26,7 @@ public class RetryAsyncSpecs
         var methodInfo = methods.First(method => method is { Name: "ImplementationAsync", ReturnType.Name: "Task`1" });
         var generic = methodInfo.MakeGenericMethod(typeof(EmptyStruct));
 
-        var func = () => generic.Invoke(instance, [action, new Context(), CancellationToken.None, false]);
+        var func = () => generic.Invoke(instance, [action, new Context(), TestContext.Current.CancellationToken, false]);
 
         var exceptionAssertions = func.Should().Throw<TargetInvocationException>();
         exceptionAssertions.And.Message.Should().Be("Exception has been thrown by the target of an invocation.");
@@ -296,7 +296,8 @@ public class RetryAsyncSpecs
             .RetryAsync((_, _, context) => contextData = context);
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            CreateDictionary("key1", "value1", "key2", "value2"));
+            CreateDictionary("key1", "value1", "key2", "value2"),
+            cancellationToken: TestContext.Current.CancellationToken);
 
         contextData.Should()
             .ContainKeys("key1", "key2").And
@@ -339,6 +340,7 @@ public class RetryAsyncSpecs
     [Fact]
     public void Should_create_new_context_for_each_call_to_execute()
     {
+        var cancellationToken = TestContext.Current.CancellationToken;
         string? contextValue = null;
 
         var policy = Policy
@@ -346,12 +348,14 @@ public class RetryAsyncSpecs
             .RetryAsync((_, _, context) => contextValue = context["key"].ToString());
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            CreateDictionary("key", "original_value"));
+            CreateDictionary("key", "original_value"),
+            cancellationToken: cancellationToken);
 
         contextValue.Should().Be("original_value");
 
         policy.RaiseExceptionAsync<DivideByZeroException>(
-            CreateDictionary("key", "new_value"));
+            CreateDictionary("key", "new_value"),
+            cancellationToken: cancellationToken);
 
         contextValue.Should().Be("new_value");
     }

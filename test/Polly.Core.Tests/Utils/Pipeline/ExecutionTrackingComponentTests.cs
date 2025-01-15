@@ -23,7 +23,7 @@ public class ExecutionTrackingComponentTests
         };
 
         var component = new ExecutionTrackingComponent(inner, _timeProvider);
-        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }));
+        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }), TestContext.Current.CancellationToken);
         executing.WaitOne();
 
         var disposeTask = component.DisposeAsync().AsTask();
@@ -56,7 +56,7 @@ public class ExecutionTrackingComponentTests
         };
 
         await using var component = new ExecutionTrackingComponent(inner, _timeProvider);
-        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }));
+        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }), TestContext.Current.CancellationToken);
         executing.WaitOne();
 
         component.HasPendingExecutions.Should().BeTrue();
@@ -82,7 +82,7 @@ public class ExecutionTrackingComponentTests
         };
 
         var component = new ExecutionTrackingComponent(inner, _timeProvider);
-        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }));
+        var execution = Task.Run(() => new ResiliencePipeline(component, Polly.Utils.DisposeBehavior.Allow, null).Execute(() => { }), TestContext.Current.CancellationToken);
         executing.WaitOne();
 
         var disposeTask = component.DisposeAsync().AsTask();
@@ -117,12 +117,12 @@ public class ExecutionTrackingComponentTests
 
         for (int i = 0; i < 10; i++)
         {
-            _ = Task.Run(() => pipeline.Execute(() => { }));
+            _ = Task.Run(() => pipeline.Execute(() => { }), TestContext.Current.CancellationToken);
         }
 
         while (tasks.Count != 10)
         {
-            await Task.Delay(1);
+            await Task.Delay(1, TestContext.Current.CancellationToken);
         }
 
         var disposeTask = component.DisposeAsync().AsTask();
@@ -132,7 +132,7 @@ public class ExecutionTrackingComponentTests
             tasks.TryDequeue(out var ev).Should().BeTrue();
             ev!.Set();
             ev.Dispose();
-            disposeTask.Wait(1).Should().BeFalse();
+            disposeTask.Wait(1, TestContext.Current.CancellationToken).Should().BeFalse();
             inner.Disposed.Should().BeFalse();
         }
 

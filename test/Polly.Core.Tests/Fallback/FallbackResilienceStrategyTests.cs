@@ -23,7 +23,7 @@ public class FallbackResilienceStrategyTests
         _options.OnFallback = _ => { called = true; return default; };
         SetHandler(outcome => outcome.Result == "error", () => Outcome.FromResult("success"));
 
-        Create().Execute(_ => "error").Should().Be("success");
+        Create().Execute(_ => "error", TestContext.Current.CancellationToken).Should().Be("success");
 
         _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments<string>);
         called.Should().BeTrue();
@@ -53,7 +53,7 @@ public class FallbackResilienceStrategyTests
                 return Outcome.FromResultAsValueTask("fallback");
             });
 
-        var result = Create().Execute(_ => "ok");
+        var result = Create().Execute(_ => "ok", TestContext.Current.CancellationToken);
 
         if (handle)
         {
@@ -81,7 +81,7 @@ public class FallbackResilienceStrategyTests
         _options.OnFallback = _ => { called = true; return default; };
 
         SetHandler(outcome => outcome.Exception is InvalidOperationException, () => Outcome.FromResult("secondary"));
-        Create().Execute<string>(_ => throw new InvalidOperationException()).Should().Be("secondary");
+        Create().Execute<string>(_ => throw new InvalidOperationException(), TestContext.Current.CancellationToken).Should().Be("secondary");
 
         _args.Should().ContainSingle(v => v.Arguments is OnFallbackArguments<string>);
         called.Should().BeTrue();
@@ -112,7 +112,7 @@ public class FallbackResilienceStrategyTests
         _options.OnFallback = _ => { called = true; return default; };
         SetHandler(outcome => false, () => Outcome.FromResult("secondary"));
 
-        Create().Execute(_ => "primary").Should().Be("primary");
+        Create().Execute(_ => "primary", TestContext.Current.CancellationToken).Should().Be("primary");
         _args.Should().BeEmpty();
         called.Should().BeFalse();
         fallbackActionCalled.Should().BeFalse();
